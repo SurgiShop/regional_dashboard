@@ -15,7 +15,7 @@ app_include_css = "/assets/regional_dashboard/css/regional_dashboard.css"
 # This assumes the report is linked to the "Selling" Module in the ERPNext UI.
 required_reports = [
     {
-        "name": "Sales Target Achievement",
+        "name": "Regional Dashboard",
         "doctype": "Sales Person",
         "is_standard": "Yes", # Links to the script files
         "module": "Selling",
