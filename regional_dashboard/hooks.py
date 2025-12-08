@@ -2,7 +2,7 @@ app_name = "regional_dashboard"
 app_title = "Regional Dashboard"
 app_publisher = "SurgiShop"
 app_email = "gary.starr@surgishop.com"
-app_description = "A custom dashboard for regional sales and target analysis."
+app_description = "Regional Dashboard"
 app_license = "MIT"
 # The default module for this app, which is also the module under which
 # the report will be created in the UI.
