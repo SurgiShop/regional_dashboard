@@ -2,6 +2,8 @@ import frappe
 from frappe import _
 from frappe.utils import flt
 
+print("DEBUG: regional_dashboard.py is being loaded!") 
+
 def execute(filters=None):
     """
     Execute function for Regional Dashboard Report
