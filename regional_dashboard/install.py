@@ -48,17 +48,14 @@ def get_data(filters):
     for sp in sales_persons:
         sales_person_name = sp.get("name") if isinstance(sp, dict) else getattr(sp, "name", sp)
 
-        targets = frappe.db.sql(
-            """
-            SELECT
-                SUM(CASE WHEN item_group = 'Products' THEN target_amount ELSE 0 END) as sales_goal,
-                SUM(CASE WHEN item_group = 'SIL' THEN target_amount ELSE 0 END) as sil_goal
-            FROM `tabTarget Detail`
-            WHERE parent = %(sales_person)s
-            """,
-            {"sales_person": sales_person_name},
-            as_dict=1,
+        targets_query = (
+            "SELECT\\n"
+            "    SUM(CASE WHEN item_group = 'Products' THEN target_amount ELSE 0 END) as sales_goal,\\n"
+            "    SUM(CASE WHEN item_group = 'SIL' THEN target_amount ELSE 0 END) as sil_goal\\n"
+            "FROM `tabTarget Detail`\\n"
+            "WHERE parent = %(sales_person)s"
         )
+        targets = frappe.db.sql(targets_query, {"sales_person": sales_person_name}, as_dict=1)
 
         sales_goal = _flt(targets[0].get("sales_goal")) if targets else 0
         sil_goal = _flt(targets[0].get("sil_goal")) if targets else 0
@@ -98,18 +95,15 @@ def get_sales_for_person(sales_person, filters):
 
     where_clause = ("AND " + " AND ".join(conditions)) if conditions else ""
 
-    result = frappe.db.sql(
-        f"""
-        SELECT SUM(si.grand_total) as total
-        FROM `tabSales Invoice` si
-        INNER JOIN `tabSales Team` st ON st.parent = si.name
-        WHERE si.docstatus = 1
-            AND st.sales_person = %(sales_person)s
-            {where_clause}
-        """,
-        values,
-        as_dict=1,
+    sales_query = (
+        "SELECT SUM(si.grand_total) as total\\n"
+        "FROM `tabSales Invoice` si\\n"
+        "INNER JOIN `tabSales Team` st ON st.parent = si.name\\n"
+        "WHERE si.docstatus = 1\\n"
+        "    AND st.sales_person = %(sales_person)s\\n"
+        + (where_clause + "\\n" if where_clause else "")
     )
+    result = frappe.db.sql(sales_query, values, as_dict=1)
 
     return _flt(result[0].get("total")) if result else 0
 
@@ -128,21 +122,18 @@ def get_sil_sales_for_person(sales_person, filters):
 
     where_clause = ("AND " + " AND ".join(conditions)) if conditions else ""
 
-    result = frappe.db.sql(
-        f"""
-        SELECT SUM(sii.amount) as total
-        FROM `tabSales Invoice` si
-        INNER JOIN `tabSales Team` st ON st.parent = si.name
-        INNER JOIN `tabSales Invoice Item` sii ON sii.parent = si.name
-        INNER JOIN `tabItem` item ON item.name = sii.item_code
-        WHERE si.docstatus = 1
-            AND st.sales_person = %(sales_person)s
-            AND item.item_group = 'SIL'
-            {where_clause}
-        """,
-        values,
-        as_dict=1,
+    sil_query = (
+        "SELECT SUM(sii.amount) as total\\n"
+        "FROM `tabSales Invoice` si\\n"
+        "INNER JOIN `tabSales Team` st ON st.parent = si.name\\n"
+        "INNER JOIN `tabSales Invoice Item` sii ON sii.parent = si.name\\n"
+        "INNER JOIN `tabItem` item ON item.name = sii.item_code\\n"
+        "WHERE si.docstatus = 1\\n"
+        "    AND st.sales_person = %(sales_person)s\\n"
+        "    AND item.item_group = 'SIL'\\n"
+        + (where_clause + "\\n" if where_clause else "")
     )
+    result = frappe.db.sql(sil_query, values, as_dict=1)
 
     return _flt(result[0].get("total")) if result else 0
 """
