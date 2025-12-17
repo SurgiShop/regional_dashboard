@@ -4,8 +4,7 @@
   "docstatus": 0,
   "doctype": "Report",
   "is_standard": "Yes",
-  "letter_head": "SurgiShop",
-  "module": "Selling",
+  "module": "Regional Dashboard",
   "name": "Regional Dashboard",
   "ref_doctype": "Sales Person",
   "report_name": "Regional Dashboard",
@@ -16,9 +15,8 @@
     },
     {
       "role": "Sales Manager"
-    },
-    {
-      "role": "Sales Master Manager"
     }
   ]
 }
+
+
