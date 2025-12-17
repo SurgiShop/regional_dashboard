@@ -5,8 +5,6 @@ app_email = "gary.starr@surgishop.com"
 app_description = "Regional Dashboard"
 app_license = "MIT"
 
-# Ship the report via fixtures so it is created on the site even if modules.txt
-# is intentionally kept empty (common on managed/cloud setups).
-fixtures = [
-	{"dt": "Report", "filters": [["name", "=", "Regional Dashboard"]]},
-]
+# Ensure the report exists and stays runnable on managed environments where
+# server scripts run in safe_exec (imports blocked) and modules.txt is kept empty.
+after_migrate = ["regional_dashboard.install.after_migrate"]
